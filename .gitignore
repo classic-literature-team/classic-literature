@@ -1,0 +1,26 @@
+# ---- 공통 ----
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# ---- Node / Frontend ----
+node_modules/
+frontend/dist/
+frontend/node_modules/
+frontend/*.local
+
+# ---- Python / Backend ----
+__pycache__/
+*.py[cod]
+backend/.venv/
+backend/.ruff_cache/
+backend/.pytest_cache/
+*.egg-info/
+
+# ---- DB ----
+*.sqlite3
+*.db

@@ -1,0 +1,225 @@
+﻿/* AI 대화 화면 스타일. home.css의 .home-root 토큰을 상속받는다. */
+
+.chat-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px);
+}
+
+.chat-back {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-body);
+}
+.chat-back:hover {
+  color: var(--green-600);
+}
+
+.chat-head {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.chat-head h2 {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a4a7a;
+}
+.chat-head p {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  margin-top: 0.3rem;
+}
+
+.chat-window {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  overflow-y: auto;
+  min-height: 320px;
+}
+
+.chat-empty {
+  margin: auto;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.9;
+}
+.chat-empty .examples {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
+}
+.chat-example {
+  font-size: 0.76rem;
+  color: #7b5ea7;
+  background: #f3eefb;
+  border: 1px solid #e0d4f2;
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background 0.15s;
+}
+.chat-example:hover {
+  background: #e9ddfa;
+}
+
+.chat-msg {
+  display: flex;
+  gap: 0.6rem;
+  max-width: 88%;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+.chat-msg.assistant {
+  align-self: flex-start;
+}
+
+.chat-avatar {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+.chat-msg.user .chat-avatar {
+  background: linear-gradient(135deg, #4ba3d8, #2d8bc4);
+}
+.chat-msg.assistant .chat-avatar {
+  background: linear-gradient(135deg, #8f6fc0, #7b5ea7);
+}
+
+.chat-bubble {
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-msg.user .chat-bubble {
+  background: var(--green-50);
+  color: var(--text);
+  border: 1px solid var(--green-100);
+}
+.chat-msg.assistant .chat-bubble {
+  background: #f7f4fc;
+  color: #2a2038;
+  border: 1px solid #ece4f7;
+}
+
+.chat-error {
+  align-self: center;
+  font-size: 0.8rem;
+  color: #b0413e;
+  background: #fdeceb;
+  border: 1px solid #f3c9c7;
+  border-radius: 10px;
+  padding: 0.5rem 0.9rem;
+}
+
+.chat-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.chat-input {
+  flex: 1;
+  padding: 0.75rem 1.1rem;
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color 0.2s;
+}
+.chat-input:focus {
+  border-color: #b39ddb;
+}
+.chat-send {
+  padding: 0.75rem 1.5rem;
+  background: #7b5ea7;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.chat-send:hover:not(:disabled) {
+  background: #6a4f92;
+}
+.chat-send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.chat-typing {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding-left: 2.6rem;
+}
+
+/* 키워드 검색 준비중 페이지 */
+.placeholder-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+.placeholder-page h2 {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: #1a4a7a;
+  margin-bottom: 0.6rem;
+}
+.placeholder-page p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.placeholder-back {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  color: #d4915a;
+  background: #fdf3e8;
+  border: 1px solid #f0dcc2;
+  border-radius: 20px;
+  padding: 0.4rem 1.1rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.placeholder-back:hover {
+  background: #fae7d2;
+}
