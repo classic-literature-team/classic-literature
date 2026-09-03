@@ -1,0 +1,27 @@
+[project]
+name = "classic-literature-backend"
+version = "0.1.0"
+description = "Classic Literature backend (FastAPI + OpenAI Agents SDK)"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+# FastAPI 의존성 주입은 인자 기본값에서 Depends()/Query() 등을 호출하는 것이 표준 패턴이다.
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+  "fastapi.Depends",
+  "fastapi.Query",
+  "fastapi.Path",
+  "fastapi.Body",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
