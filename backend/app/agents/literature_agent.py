@@ -2,28 +2,34 @@ from agents import Agent, Runner, function_tool
 
 from app.core.config import settings
 from app.db.session import SessionLocal
-from app.models.book import Book
+from app.models import Book
 
 
 @function_tool
 def search_books(query: str) -> str:
-    """제목이나 저자에 검색어가 포함된 책을 DB에서 찾아 목록을 반환한다.
+    """제목(국문/한문)에 검색어가 포함된 이본(book)을 DB에서 찾아 목록을 반환한다.
 
     Args:
-        query: 제목 또는 저자에 대한 검색어.
+        query: 제목에 대한 검색어.
     """
+    q = query.lower()
+
+    def matches(b: Book) -> bool:
+        fields = [b.name, b.title_name_kor, b.title_name_chi, b.designation]
+        return any(f and q in f.lower() for f in fields)
+
     with SessionLocal() as db:
         books = db.query(Book).all()
-        matched = [
-            b
-            for b in books
-            if query.lower() in b.title.lower() or query.lower() in b.author.lower()
-        ]
+        matched = [b for b in books if matches(b)]
 
     if not matched:
-        return f"'{query}'에 해당하는 책을 찾지 못했습니다."
+        return f"'{query}'에 해당하는 이본을 찾지 못했습니다."
 
-    lines = [f"- {b.title} ({b.author}, {b.year or '연도 미상'})" for b in matched]
+    lines = [
+        f"- {b.title_name_kor or b.name or b.id}"
+        f"{f' ({b.title_name_chi})' if b.title_name_chi else ''}"
+        for b in matched
+    ]
     return "\n".join(lines)
 
 
