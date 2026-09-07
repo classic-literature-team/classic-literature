@@ -1,0 +1,23 @@
+﻿# 로컬 개발용 PostgreSQL 컨테이너
+# 로컬에 이미 PostgreSQL(5432)이 있어 충돌을 피하려고 호스트 포트는 5433 사용.
+services:
+  db:
+    image: postgres:16
+    container_name: classic-lit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: classic_literature
+    ports:
+      - "5433:5432" # 호스트 5433 -> 컨테이너 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d classic_literature"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pgdata:
