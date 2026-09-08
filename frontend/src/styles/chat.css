@@ -225,9 +225,15 @@
 }
 
 /* ===== 챗 답변 마크다운 렌더링 스타일 ===== */
-.chat-bubble > *:first-child { margin-top: 0; }
-.chat-bubble > *:last-child { margin-bottom: 0; }
-.chat-bubble p { margin: 0.5rem 0; }
+.chat-bubble > *:first-child {
+  margin-top: 0;
+}
+.chat-bubble > *:last-child {
+  margin-bottom: 0;
+}
+.chat-bubble p {
+  margin: 0.5rem 0;
+}
 .chat-bubble h1,
 .chat-bubble h2,
 .chat-bubble h3 {
@@ -237,8 +243,13 @@
   margin: 0.8rem 0 0.4rem;
 }
 .chat-bubble ul,
-.chat-bubble ol { margin: 0.4rem 0; padding-left: 1.3rem; }
-.chat-bubble li { margin: 0.2rem 0; }
+.chat-bubble ol {
+  margin: 0.4rem 0;
+  padding-left: 1.3rem;
+}
+.chat-bubble li {
+  margin: 0.2rem 0;
+}
 .chat-bubble code {
   background: #ece4f7;
   padding: 0.1em 0.35em;
@@ -276,4 +287,6 @@
   background: #f3eefb;
   font-weight: 600;
 }
-.chat-bubble tr:nth-child(even) td { background: #faf8ff; }
+.chat-bubble tr:nth-child(even) td {
+  background: #faf8ff;
+}
