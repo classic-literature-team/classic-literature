@@ -223,3 +223,70 @@
 .placeholder-back:hover {
   background: #fae7d2;
 }
+
+/* ===== 챗 답변 마크다운 렌더링 스타일 ===== */
+.chat-bubble > *:first-child {
+  margin-top: 0;
+}
+.chat-bubble > *:last-child {
+  margin-bottom: 0;
+}
+.chat-bubble p {
+  margin: 0.5rem 0;
+}
+.chat-bubble h1,
+.chat-bubble h2,
+.chat-bubble h3 {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0.8rem 0 0.4rem;
+}
+.chat-bubble ul,
+.chat-bubble ol {
+  margin: 0.4rem 0;
+  padding-left: 1.3rem;
+}
+.chat-bubble li {
+  margin: 0.2rem 0;
+}
+.chat-bubble code {
+  background: #ece4f7;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.82em;
+}
+.chat-bubble pre {
+  background: #f3eefb;
+  padding: 0.7rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.chat-bubble blockquote {
+  margin: 0.5rem 0;
+  padding: 0.3rem 0.8rem;
+  border-left: 3px solid #b39ddb;
+  color: #4a4458;
+  background: #faf7ff;
+}
+/* 표 */
+.chat-bubble table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.6rem 0;
+  font-size: 0.8rem;
+}
+.chat-bubble th,
+.chat-bubble td {
+  border: 1px solid #ded3ef;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+.chat-bubble th {
+  background: #f3eefb;
+  font-weight: 600;
+}
+.chat-bubble tr:nth-child(even) td {
+  background: #faf8ff;
+}
