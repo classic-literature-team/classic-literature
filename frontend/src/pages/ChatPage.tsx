@@ -2,7 +2,9 @@
 import '@/styles/chat.css'
 
 import { useEffect, useRef, useState } from 'react'
+import Markdown from 'react-markdown'
 import { useNavigate } from 'react-router-dom'
+import remarkGfm from 'remark-gfm'
 
 import { useChat } from '@/hooks/useChat'
 import { ApiError } from '@/utils/api'
@@ -98,7 +100,13 @@ export function ChatPage() {
               <div className="chat-avatar">
                 {m.role === 'user' ? '나' : '楊'}
               </div>
-              <div className="chat-bubble">{m.content}</div>
+              <div className="chat-bubble">
+                {m.role === 'assistant' ? (
+                  <Markdown remarkPlugins={[remarkGfm]}>{m.content}</Markdown>
+                ) : (
+                  m.content
+                )}
+              </div>
             </div>
           ))}
 
