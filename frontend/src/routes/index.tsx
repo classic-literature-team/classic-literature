@@ -1,8 +1,9 @@
-﻿import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 
 import { RootLayout } from '@/layouts/RootLayout'
 import { BooksPage } from '@/pages/BooksPage'
 import { ChatPage } from '@/pages/ChatPage'
+import { GraphPage } from '@/pages/GraphPage'
 import { HomePage } from '@/pages/HomePage'
 import { KeywordSearchPage } from '@/pages/KeywordSearchPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
   { path: '/chat', element: <ChatPage /> },
   { path: '/search', element: <KeywordSearchPage /> },
+  { path: '/graph', element: <GraphPage /> },
   {
     element: <RootLayout />,
     children: [

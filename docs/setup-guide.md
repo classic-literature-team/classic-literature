@@ -221,7 +221,9 @@ psql -U postgres -d CLL -c "\dt"
 ### 5-8. 백엔드 실행 테스트
 
 ```powershell
-uvicorn app.main:app --reload
+.\.venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload --port 8000
+
 ```
 
 - `http://localhost:8000` 주소가 나오면 성공.

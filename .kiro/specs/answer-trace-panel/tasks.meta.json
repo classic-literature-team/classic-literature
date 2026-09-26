@@ -1,0 +1,452 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 `ToolQueryRecord` 데이터클래스와 클래스 한국어 label 매핑 상수 정의": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576324
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074589430
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074694620
+      }
+    ],
+    "1.2 `TraceCollector`와 `current_collector()` (contextvars 기반) 구현": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576382
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074701611
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074827792
+      }
+    ],
+    "2.1 `build_trace_payload(records)` 병합 규칙 구현": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576474
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074834914
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075103541
+      }
+    ],
+    "3.1 `search_hanmun_novel_db`에 수집기 기록 로직 삽입": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576517
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074835902
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075104720
+      }
+    ],
+    "4.1 chat_stream 라우트에 reset/trace 이벤트 배선": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576565
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075128300
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075489917
+      }
+    ],
+    "5.1 `hypothesis`를 `backend/requirements-dev.txt`에 추가": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576610
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075129641
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075488570
+      }
+    ],
+    "6.1 Answer_Trace 타입과 `onTrace` 콜백 추가": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576653
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075130851
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075487345
+      }
+    ],
+    "7.1 `Message.trace` 필드와 onTrace 부착 로직": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576696
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075652151
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075811296
+      }
+    ],
+    "8.1 토글 버튼과 패널 골격": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576740
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075502433
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075643898
+      }
+    ],
+    "8.2 다섯 항목 렌더 (경로/노드/관계/evidence/테이블)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576872
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075509547
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075644954
+      }
+    ],
+    "9.1 vitest + testing-library + fast-check 설정": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074576958
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075132000
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075492303
+      }
+    ],
+    "10.1 answer-audit 스타일을 `.home-root` 스코프로 이식": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074577034
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075132924
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075491310
+      }
+    ],
+    "11. 최종 배선 및 회귀 확인 체크포인트": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074577121
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075818344
+      },
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076008802
+      }
+    ],
+    "1. 백엔드 근거 수집 기반 구축 (`app/agents/trace.py` 신규)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790074827839
+      }
+    ],
+    "2. trace 페이로드 병합 빌더 (`app/agents/trace.py`)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075103590
+      }
+    ],
+    "3. 도구 계측 (`app/agents/tools.py` 수정)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075104765
+      }
+    ],
+    "6. 프론트 SSE 파서 확장 (`frontend/src/hooks/useChat.ts`)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075487384
+      }
+    ],
+    "5. 백엔드 property 테스트 도구 도입 (기존 스택 확인 반영)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075488649
+      }
+    ],
+    "4. 스트리밍 배선 (`literature_agent.py` 확인 + `app/api/routes/chat.py` 수정)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075490002
+      }
+    ],
+    "10. 스타일 이식 (`frontend/src/styles/chat.css`)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075491350
+      }
+    ],
+    "9. 프론트 테스트 도구 도입 (기존 스택 확인 반영)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075492347
+      }
+    ],
+    "8. AnswerTracePanel 컴포넌트 (`frontend/src/components/chat/AnswerTracePanel.tsx` 신규)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075644996
+      }
+    ],
+    "7. 근거를 어시스턴트 메시지에 부착 (`ChatPage.tsx`)": [
+      {
+        "executionId": "34919b54-3ddb-4cdb-ba21-685bf778d877",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790075811385
+      }
+    ],
+    "1.3 TraceCollector 격리·순서 property 테스트": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076145953
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076550614
+      }
+    ],
+    "2.2 병합 빌더 단위/예제 테스트": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076146904
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076552006
+      }
+    ],
+    "2.3 병합 빌더 property 테스트 (클래스/관계 합집합·순서)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076148290
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076553457
+      }
+    ],
+    "2.4 병합 빌더 property 테스트 (레코드 병합 불변식)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076149719
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076554895
+      }
+    ],
+    "2.5 병합 빌더 property 테스트 (경로/evidence 대응)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076150648
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076556255
+      }
+    ],
+    "3.3 행 직렬화 property 테스트": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076151611
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076557135
+      }
+    ],
+    "3.2 도구 계측 단위 테스트 (모드별 기록 여부)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076565778
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077183454
+      }
+    ],
+    "4.2 라우트 이벤트 순서 통합 테스트 (에이전트/수집기 목)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076567368
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077184818
+      }
+    ],
+    "6.2 파서 견고성 property 테스트": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076568866
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077261004
+      }
+    ],
+    "6.3 파서 단위 테스트 (기존 계약 회귀 방지)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076569880
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077189829
+      }
+    ],
+    "8.3 컴포넌트 렌더/토글/탭 단위 테스트": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076571228
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077186245
+      }
+    ],
+    "8.4 컴포넌트 property 테스트 (칩·탭·건수·렌더)": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076572628
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077187656
+      }
+    ],
+    "8.5 접근성 상태 property 테스트": [
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790076573573
+      },
+      {
+        "executionId": "54bfecb0-18a3-45cc-b3b3-47e4a022648b",
+        "chatSessionId": "sess_3471cea3-7ad4-4fb2-b23a-91fcd653f405",
+        "timestamp": 1790077188589
+      }
+    ]
+  }
+}
