@@ -1,4 +1,4 @@
-﻿/* ============================
+/* ============================
    한국고전소설DB — Ghibli Meadow (하늘색)
    index.html 시안 이식용 스코프 스타일
    ============================ */
@@ -1073,4 +1073,13 @@
 /* 검색바 제거로 통계와 네비 사이 간격 보정 */
 .stats-strip {
   margin-top: 1.5rem;
+}
+
+/* 지식그래프 링크 탭 */
+.nav-link--graph {
+  color: #2a7060;
+}
+.nav-link--graph:hover {
+  color: #fff;
+  background: #3aaa80;
 }

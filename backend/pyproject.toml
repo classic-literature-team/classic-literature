@@ -14,6 +14,10 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
 
+# 프롬프트(instructions) 문자열은 길 수밖에 없어 해당 파일만 줄길이(E501) 예외.
+[tool.ruff.lint.per-file-ignores]
+"app/agents/literature_agent.py" = ["E501"]
+
 # FastAPI 의존성 주입은 인자 기본값에서 Depends()/Query() 등을 호출하는 것이 표준 패턴이다.
 [tool.ruff.lint.flake8-bugbear]
 extend-immutable-calls = [

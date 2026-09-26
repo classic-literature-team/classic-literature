@@ -1,4 +1,4 @@
-﻿export type TabId =
+export type TabId =
   'intro' | 'biblio' | 'parti' | 'arran' | 'expre' | 'graph' | 'genre' | 'yangs'
 
 export interface TabMeta {
@@ -24,13 +24,14 @@ export interface LinkTab {
   label: string
   icon: string
   to: string
-  variant: 'chat' | 'keyword'
+  variant: 'chat' | 'keyword' | 'graph'
 }
 
 /** 다른 페이지로 이동하는 탭 */
 export const linkTabs: LinkTab[] = [
   { label: 'AI 질문', icon: '🤖', to: '/chat', variant: 'chat' },
   { label: '키워드 검색', icon: '🔍', to: '/search', variant: 'keyword' },
+  { label: '지식그래프', icon: '🕸', to: '/graph', variant: 'graph' },
 ]
 
 export interface Notice {

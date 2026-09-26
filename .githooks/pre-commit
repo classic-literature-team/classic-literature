@@ -1,0 +1,71 @@
+#!/bin/sh
+# 저장소 공유 pre-commit 훅.
+# CI(.github/workflows/pr-check.yml)와 동일한 포맷/린트 검사를 커밋 전에 로컬에서 돌려,
+# PR build check에서 막히는 일을 예방한다.
+#
+# 설치(최초 1회):  git config core.hooksPath .githooks
+#
+# 동작: 스테이징된 파일이 속한 스택만 검사한다(변경 없는 스택은 건너뛴다).
+#   - frontend/**: prettier --check  +  eslint
+#   - backend/**:  ruff format --check app  +  ruff check app
+# 검사만 하며 파일을 자동 수정하지 않는다. 실패하면 고치는 명령을 안내하고 커밋을 막는다.
+
+set -e
+
+# 스테이징된(추가/수정/이름변경) 파일 목록. 삭제된 파일은 제외.
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+
+# 스택별 변경 여부 판별.
+frontend_changed=$(printf '%s\n' "$staged" | grep '^frontend/' || true)
+backend_changed=$(printf '%s\n' "$staged" | grep '^backend/' || true)
+
+fail=0
+
+if [ -n "$frontend_changed" ]; then
+  echo "▶ frontend 포맷/린트 검사..."
+  if ! (cd frontend && npm run format:check --silent); then
+    echo ""
+    echo "✖ prettier 포맷 위반. 다음으로 고친 뒤 다시 스테이징하세요:"
+    echo "    (cd frontend && npm run format)"
+    fail=1
+  fi
+  if ! (cd frontend && npm run lint --silent); then
+    echo ""
+    echo "✖ eslint 위반. 다음으로 고칠 수 있습니다:"
+    echo "    (cd frontend && npm run lint:fix)"
+    fail=1
+  fi
+fi
+
+if [ -n "$backend_changed" ]; then
+  echo "▶ backend 포맷/린트 검사..."
+  # venv의 ruff를 우선 사용하고, 없으면 PATH의 ruff로 대체.
+  if [ -x "backend/.venv/bin/ruff" ]; then
+    RUFF="backend/.venv/bin/ruff"
+  elif [ -x "backend/.venv/Scripts/ruff.exe" ]; then
+    RUFF="backend/.venv/Scripts/ruff.exe"
+  else
+    RUFF="ruff"
+  fi
+  if ! (cd backend && "../$RUFF" format --check app); then
+    echo ""
+    echo "✖ ruff 포맷 위반. 다음으로 고치세요:"
+    echo "    (cd backend && ruff format app)"
+    fail=1
+  fi
+  if ! (cd backend && "../$RUFF" check app); then
+    echo ""
+    echo "✖ ruff 린트 위반. 다음으로 고칠 수 있습니다:"
+    echo "    (cd backend && ruff check --fix app)"
+    fail=1
+  fi
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo ""
+  echo "커밋이 중단되었습니다. 위 문제를 고친 뒤 다시 커밋하세요."
+  echo "(급하면 git commit --no-verify 로 건너뛸 수 있으나 CI에서 다시 막힙니다.)"
+  exit 1
+fi
+
+exit 0
