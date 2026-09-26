@@ -367,7 +367,10 @@
     linear-gradient(rgba(255, 255, 255, 0.965), rgba(255, 255, 255, 0.965)),
     linear-gradient(90deg, rgba(45, 139, 196, 0.08) 1px, transparent 1px),
     linear-gradient(rgba(45, 139, 196, 0.08) 1px, transparent 1px);
-  background-size: auto, 28px 28px, 28px 28px;
+  background-size:
+    auto,
+    28px 28px,
+    28px 28px;
 }
 
 .home-root .message {
@@ -482,11 +485,15 @@
   border-radius: 14px;
   background: var(--white);
   box-shadow: var(--shadow);
-  transition: border-color 0.18s, box-shadow 0.18s;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
 .home-root .composer:focus-within {
   border-color: var(--green-400);
-  box-shadow: 0 0 0 3px rgba(75, 163, 216, 0.14), var(--shadow);
+  box-shadow:
+    0 0 0 3px rgba(75, 163, 216, 0.14),
+    var(--shadow);
 }
 .home-root .composer textarea {
   width: 100%;
@@ -605,7 +612,10 @@
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
-  transition: transform 0.18s, border-color 0.18s, background 0.18s;
+  transition:
+    transform 0.18s,
+    border-color 0.18s,
+    background 0.18s;
 }
 .home-root .category-tab[data-category='bibliographic'] {
   --category-bg: #fbf2d9;
@@ -675,7 +685,10 @@
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 500;
-  transition: border-color 0.18s, color 0.18s, background 0.18s;
+  transition:
+    border-color 0.18s,
+    color 0.18s,
+    background 0.18s;
 }
 .home-root .node-button:hover,
 .home-root .node-button.active {
@@ -746,7 +759,10 @@
   background: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   text-align: left;
-  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+  transition:
+    transform 0.18s,
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
 .home-root .example:hover {
   transform: translateY(-2px);
@@ -898,7 +914,10 @@
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
-  transition: border-color 0.18s, background 0.18s, color 0.18s;
+  transition:
+    border-color 0.18s,
+    background 0.18s,
+    color 0.18s;
 }
 .home-root .why-button:hover {
   border-color: var(--green-300);
@@ -923,7 +942,9 @@
   display: grid;
   grid-template-rows: 0fr;
   margin-top: 0;
-  transition: grid-template-rows 0.3s ease, margin-top 0.3s ease;
+  transition:
+    grid-template-rows 0.3s ease,
+    margin-top 0.3s ease;
 }
 .home-root .answer-audit.open {
   grid-template-rows: 1fr;
@@ -1011,12 +1032,24 @@
   transform: translateY(4px);
   animation: traceReveal 0.32s ease forwards;
 }
-.home-root .trace-step:nth-child(1) { animation-delay: 0.02s; }
-.home-root .trace-step:nth-child(2) { animation-delay: 0.1s; }
-.home-root .trace-step:nth-child(3) { animation-delay: 0.18s; }
-.home-root .trace-step:nth-child(4) { animation-delay: 0.26s; }
-.home-root .trace-step:nth-child(5) { animation-delay: 0.34s; }
-.home-root .trace-step:nth-child(6) { animation-delay: 0.42s; }
+.home-root .trace-step:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.home-root .trace-step:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.home-root .trace-step:nth-child(3) {
+  animation-delay: 0.18s;
+}
+.home-root .trace-step:nth-child(4) {
+  animation-delay: 0.26s;
+}
+.home-root .trace-step:nth-child(5) {
+  animation-delay: 0.34s;
+}
+.home-root .trace-step:nth-child(6) {
+  animation-delay: 0.42s;
+}
 /* 단계 사이 화살표 구분자 */
 .home-root .trace-step:not(:last-child)::after {
   content: '\2192';
@@ -1161,7 +1194,10 @@
   font-size: 0.74rem;
   font-weight: 600;
   white-space: nowrap;
-  transition: border-color 0.18s, color 0.18s, background 0.18s;
+  transition:
+    border-color 0.18s,
+    color 0.18s,
+    background 0.18s;
 }
 .home-root .audit-table-tab:hover {
   border-color: var(--green-300);

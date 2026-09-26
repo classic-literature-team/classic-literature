@@ -1,10 +1,7 @@
 ﻿// AI 질문 화면(ChatPage) 가이드 패널 데이터. 시안 ai-chat-2의 한국어 원문 보존.
 
 export type CategoryId =
-  | 'bibliographic'
-  | 'participatory'
-  | 'arrangement'
-  | 'expressive'
+  'bibliographic' | 'participatory' | 'arrangement' | 'expressive'
 
 export interface CategoryNode {
   /** 노드 라벨(한국어 원문) */
@@ -116,7 +113,8 @@ export const guideCategories: Category[] = [
       },
       {
         label: '평비',
-        description: '넓은 의미의 평비본소설에서 발견되는 평비자의 비평을 다룬다.',
+        description:
+          '넓은 의미의 평비본소설에서 발견되는 평비자의 비평을 다룬다.',
       },
     ],
   },

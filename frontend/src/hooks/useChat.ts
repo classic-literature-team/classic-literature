@@ -120,9 +120,7 @@ async function streamChat(
       const rawEvent = buffer.slice(0, sep)
       buffer = buffer.slice(sep + 2)
 
-      const line = rawEvent
-        .split('\n')
-        .find((l) => l.startsWith('data:'))
+      const line = rawEvent.split('\n').find((l) => l.startsWith('data:'))
       if (!line) continue
 
       const payload = JSON.parse(line.slice('data:'.length).trim()) as {

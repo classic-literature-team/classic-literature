@@ -48,9 +48,7 @@ def get_graph(
     db: Session = Depends(get_db),
 ) -> GraphData:
     """중심 노드에 직접 연결된 엣지와 이웃 노드를 반환한다 (1-hop)."""
-    stmt = select(Edge).where(
-        or_(Edge.source_id == node_id, Edge.target_id == node_id)
-    )
+    stmt = select(Edge).where(or_(Edge.source_id == node_id, Edge.target_id == node_id))
     edges = list(db.scalars(stmt))
 
     nodes: dict[str, GraphNode] = {}

@@ -18,10 +18,7 @@ import { useChatStream } from './useChat'
 // ---------------------------------------------------------------------------
 
 type SseEvent =
-  | { delta: string }
-  | { done: true }
-  | { error: string }
-  | { trace: unknown }
+  { delta: string } | { done: true } | { error: string } | { trace: unknown }
 
 /** 하나의 이벤트를 "data: {json}\n\n" 프레임 문자열로 만든다. */
 function frame(event: SseEvent): string {
@@ -33,7 +30,10 @@ function frame(event: SseEvent): string {
  * global.fetch에 설치한다. chunkSize로 프레임 경계를 넘나드는 청크 분할도
  * 시뮬레이션할 수 있다(파서의 버퍼링 견고성 확인).
  */
-function installFetchMock(events: SseEvent[], opts: { chunkSize?: number } = {}) {
+function installFetchMock(
+  events: SseEvent[],
+  opts: { chunkSize?: number } = {},
+) {
   const encoder = new TextEncoder()
   const bytes = encoder.encode(events.map(frame).join(''))
   const chunkSize = opts.chunkSize ?? bytes.length
@@ -62,7 +62,10 @@ function installFetchMock(events: SseEvent[], opts: { chunkSize?: number } = {})
 }
 
 /** useChatStream().send를 목 스트림에 대해 실행하고 관측 결과를 수집한다. */
-async function runStream(events: SseEvent[], opts: { chunkSize?: number } = {}) {
+async function runStream(
+  events: SseEvent[],
+  opts: { chunkSize?: number } = {},
+) {
   installFetchMock(events, opts)
 
   const deltas: string[] = []
@@ -173,7 +176,12 @@ describe('useChatStream SSE 파서 단위 테스트 (6.3)', () => {
 
   it('프레임 경계를 가로지르는 청크 분할에도 delta/trace를 정확히 파싱한다 (Req 5.4)', async () => {
     const { deltas, traces, joined, error } = await runStream(
-      [{ delta: '조각1' }, { trace: validTrace }, { delta: '조각2' }, { done: true }],
+      [
+        { delta: '조각1' },
+        { trace: validTrace },
+        { delta: '조각2' },
+        { done: true },
+      ],
       { chunkSize: 3 },
     )
 
@@ -254,7 +262,9 @@ describe('useChatStream 파서 견고성 property 테스트 (6.2)', () => {
             expect(mixed.error).toBeNull()
           } else {
             expect(mixed.error).toBeInstanceOf(Error)
-            expect((mixed.error as Error).message).toBe((base.error as Error).message)
+            expect((mixed.error as Error).message).toBe(
+              (base.error as Error).message,
+            )
           }
         },
       ),

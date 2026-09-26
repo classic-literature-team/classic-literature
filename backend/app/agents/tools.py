@@ -283,8 +283,7 @@ def _traverse(db, model, stmt, table, steps, limit, filters=None):
         if not edges:
             done = "\n".join(" ".join(p) for p in paths.values())
             return (
-                f"{done}\n\n"
-                f"('{relation}'으로 {dest_class}에 연결된 노드가 없습니다.)"
+                f"{done}\n\n('{relation}'으로 {dest_class}에 연결된 노드가 없습니다.)"
             )
 
         if relation not in seen_relations:

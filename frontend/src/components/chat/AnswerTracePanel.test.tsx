@@ -1,4 +1,10 @@
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react'
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 
@@ -23,7 +29,9 @@ const EMPTY_TRACE: AnswerTrace = {
   records: [],
 }
 
-function makeRecordGroup(overrides: Partial<TraceRecordGroup> = {}): TraceRecordGroup {
+function makeRecordGroup(
+  overrides: Partial<TraceRecordGroup> = {},
+): TraceRecordGroup {
   const columns = overrides.columns ?? ['id', 'title_name_kor']
   const rows = overrides.rows ?? [
     { id: 'book_001', title_name_kor: '구운몽' },
@@ -213,12 +221,11 @@ const nonEmptyTraceArb: fc.Arbitrary<AnswerTrace> = fc
     relations: fc.array(relationArb, { maxLength: 4 }),
     evidence: fc.array(textArb, { maxLength: 4 }),
     // records key는 React key로 쓰이므로 그룹 간 유일해야 한다.
-    records: fc
-      .uniqueArray(recordGroupArb, {
-        minLength: 0,
-        maxLength: 4,
-        selector: (g) => g.key,
-      }),
+    records: fc.uniqueArray(recordGroupArb, {
+      minLength: 0,
+      maxLength: 4,
+      selector: (g) => g.key,
+    }),
   })
   .filter(
     (t) =>

@@ -14,7 +14,7 @@ import {
   guideCategories,
   personaGreeting,
 } from '@/data/chat-guide'
-import { type AnswerTrace,useChatStream } from '@/hooks/useChat'
+import { type AnswerTrace, useChatStream } from '@/hooks/useChat'
 import { ApiError } from '@/utils/api'
 
 interface Message {
@@ -214,7 +214,12 @@ export function ChatPage() {
             </button>
           </div>
 
-          <div className="messages" ref={windowRef} role="log" aria-live="polite">
+          <div
+            className="messages"
+            ref={windowRef}
+            role="log"
+            aria-live="polite"
+          >
             {messages.map((m, i) => {
               if (
                 m.role === 'assistant' &&
@@ -243,9 +248,7 @@ export function ChatPage() {
                     ) : (
                       m.content
                     )}
-                    {m.source && (
-                      <div className="source-note">{m.source}</div>
-                    )}
+                    {m.source && <div className="source-note">{m.source}</div>}
                     {/* Req 6.2: trace가 있을 때만 근거 패널 렌더(빈 trace는 컴포넌트가 자체 미렌더) */}
                     {m.role === 'assistant' && m.trace && (
                       <AnswerTracePanel trace={m.trace} />
