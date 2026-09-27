@@ -1314,3 +1314,198 @@
     animation: none;
   }
 }
+
+/* =========================================================
+   지식 그래프 (비모달 플로팅 패널 + React Flow)
+   .home-root 스코프. why-button과 톤을 맞춘 알약형 버튼과
+   딤 없이 화면 위에 떠 있는 카드형 패널.
+   ========================================================= */
+
+/* ── "지식 그래프" 버튼 (why-button과 동일 톤) ── */
+.home-root .graph-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--green-600);
+  background: var(--green-50);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition:
+    border-color 0.18s,
+    background 0.18s,
+    color 0.18s;
+}
+.home-root .graph-button:hover {
+  border-color: var(--green-300);
+  background: var(--sky);
+}
+.home-root .graph-button:focus-visible {
+  outline: 2px solid var(--green-400);
+  outline-offset: 2px;
+}
+.home-root .graph-button[aria-expanded='true'] {
+  border-color: var(--green-400);
+  color: #fff;
+  background: linear-gradient(135deg, var(--green-400), var(--green-600));
+}
+
+/* ── 비모달 플로팅 패널: 딤/오버레이 없음, 뒤 화면 조작 가능 ── */
+.home-root .kg-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: 720px;
+  max-width: calc(100vw - 32px);
+  height: 560px;
+  max-height: calc(100vh - 48px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow:
+    0 18px 48px rgba(30, 111, 160, 0.22),
+    var(--shadow-hover);
+  overflow: hidden;
+}
+
+.home-root .kg-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--green-50);
+}
+.home-root .kg-panel-head h4 {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--green-600);
+}
+.home-root .kg-close {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition:
+    border-color 0.18s,
+    color 0.18s,
+    background 0.18s;
+}
+.home-root .kg-close:hover {
+  border-color: var(--green-300);
+  color: var(--green-600);
+  background: var(--sky);
+}
+.home-root .kg-close:focus-visible {
+  outline: 2px solid var(--green-400);
+  outline-offset: 2px;
+}
+
+/* ── 본문: 좌 그래프 / 우 인스펙터 ── */
+.home-root .kg-panel-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+}
+.home-root .kg-flow {
+  min-width: 0;
+  height: 100%;
+  background: linear-gradient(165deg, #f4fbff 0%, #eef8fc 100%);
+}
+.home-root .kg-flow .react-flow {
+  width: 100%;
+  height: 100%;
+}
+
+.home-root .kg-inspector {
+  min-width: 0;
+  padding: 14px;
+  border-left: 1px solid var(--border-light);
+  background: var(--white);
+  overflow-y: auto;
+}
+.home-root .kg-inspector-hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.home-root .kg-inspector-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+.home-root .kg-inspector-head strong {
+  font-family: var(--font-title);
+  font-size: 0.92rem;
+  color: var(--green-600);
+  word-break: break-word;
+}
+.home-root .kg-inspector-head small {
+  color: var(--earth);
+  font-size: 0.7rem;
+}
+
+.home-root .kg-fields {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.home-root .kg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.home-root .kg-field dt {
+  color: var(--green-600);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.home-root .kg-field dd {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+/* ── 반응형: 좁은 화면에서도 비모달(딤 없음) 유지 ── */
+@media (max-width: 720px) {
+  .home-root .kg-panel {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100vw - 16px);
+    height: calc(100vh - 16px);
+    max-height: calc(100vh - 16px);
+  }
+  .home-root .kg-panel-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .home-root .kg-inspector {
+    border-left: 0;
+    border-top: 1px solid var(--border-light);
+    max-height: 40%;
+  }
+}

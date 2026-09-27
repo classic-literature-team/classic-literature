@@ -48,13 +48,37 @@ export interface TraceRecordGroup {
   rows: Record<string, string>[]
 }
 
-/** SSE `trace` 이벤트 본문이자 프론트 상태의 근거 객체. */
+/** 지식그래프 정확 모드용 실제 노드 하나(백엔드 trace 확장 필드). */
+export interface TraceNode {
+  id: string
+  node_class: string
+  label: string
+  name: string
+}
+
+/** 지식그래프 정확 모드용 실제 연결 하나(백엔드 trace 확장 필드). */
+export interface TraceEdge {
+  source: string
+  target: string
+  relation: string
+  korean: string
+}
+
+/**
+ * SSE `trace` 이벤트 본문이자 프론트 상태의 근거 객체.
+ *
+ * nodes/edges는 백엔드가 실제 그래프를 제공할 때만 채워지는 확장 필드다.
+ * 없으면(빈 배열/undefined) KnowledgeGraphPanel이 기존 근사 로직으로 fallback한다.
+ * 옵셔널로 두어 기존 이벤트/테스트와 하위호환을 유지한다.
+ */
 export interface AnswerTrace {
   path: string[]
   classes: TraceClass[]
   relations: TraceRelation[]
   evidence: string[]
   records: TraceRecordGroup[]
+  nodes?: TraceNode[]
+  edges?: TraceEdge[]
 }
 
 interface StreamCallbacks {

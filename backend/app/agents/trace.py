@@ -52,6 +52,12 @@ class ToolQueryRecord:
         shown_rows: 표시된 레코드의 컬럼→값 매핑 목록. 장문 컬럼은 축약된다.
         relations: 등장한 관계명(원문 키, 예: ``"spreadsInto"``) 목록.
         path_segments: 경로 탐색 시 각 단계를 나타내는 라벨 목록.
+        edges: 실제 노드-노드 연결(Edge)의 원자료 목록. 각 dict 는
+            ``{source_id, source_class, source_name, target_id, target_class,
+            target_name, relation}`` 형태다. ``tools.py`` 가 조회 시 순회한
+            Edge 를 가공 없이 그대로 담고, 병합(``build_trace_payload``)에서
+            그래프용 nodes/edges 스키마로 정규화·중복 제거된다. 관계를 타지
+            않은 조회(단일 조회 include_relations=False 등)에서는 빈 목록이다.
     """
 
     table: str
@@ -62,6 +68,7 @@ class ToolQueryRecord:
     shown_rows: list[dict[str, str]]
     relations: list[str] = field(default_factory=list)
     path_segments: list[str] = field(default_factory=list)
+    edges: list[dict] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -187,6 +194,15 @@ def build_trace_payload(records: list[ToolQueryRecord]) -> dict | None:
     - path: 병합된 경로 단계가 있으면 그 한국어 라벨 목록, 없으면 조회 클래스
       label 나열.
     - evidence: 클래스별 조회 건수 요약 문장 리스트.
+    - nodes: 그래프 노드(실제 노드) 목록. ``{id, node_class, label, name}``.
+      모든 record.edges 의 출발/도착 노드를 id 기준 중복 제거·첫 등장 순서
+      유지로 모은다. edges 가 하나도 없으면 빈 배열.
+    - edges: 실제 노드-노드 연결 목록. ``{source, target, relation, korean}``.
+      ``(source, target, relation)`` 기준 중복 제거·첫 등장 순서 유지. 관계를
+      타지 않은 조회만 있으면 빈 배열이며, 이때 프론트는 기존 근사로 fallback 한다.
+
+    ``nodes``/``edges`` 는 기존 키(path/classes/relations/evidence/records)에
+    **추가**되는 하위호환 필드다. 기존 키의 값·규칙은 전혀 바뀌지 않는다.
 
     기록이 비어 있으면(도구를 안 썼으면) ``None``을 반환한다(Requirement 3.9).
 
@@ -310,13 +326,83 @@ def build_trace_payload(records: list[ToolQueryRecord]) -> dict | None:
             # 예: "이본(Book) 142건 중 30건 확인"
             evidence.append(f"{label}({node_class}) {total}건 중 {shown}건 확인")
 
+    # nodes/edges: 실제 노드-노드 연결(그래프)을 병합한다(하위호환 추가 필드).
+    nodes, edges = _build_graph(records)
+
     return {
         "path": path,
         "classes": classes,
         "relations": relations,
         "evidence": evidence,
         "records": records_out,
+        "nodes": nodes,
+        "edges": edges,
     }
+
+
+def _build_graph(
+    records: list[ToolQueryRecord],
+) -> tuple[list[dict], list[dict]]:
+    """record.edges 원자료를 그래프용 nodes/edges 스키마로 병합한다.
+
+    - nodes: 각 edge 의 출발/도착 노드를 ``{id, node_class, label, name}`` 으로
+      등록한다. id 기준 중복 제거·첫 등장 순서 유지. label 은
+      ``CLASS_LABEL_KOR.get(node_class, node_class)``, name 은 노드 표시명이
+      없으면(``None``/공백) id 로 폴백한다.
+    - edges: ``{source, target, relation, korean}`` 로 만들며
+      ``(source, target, relation)`` 기준 중복 제거·첫 등장 순서 유지.
+      korean 은 ``RELATION_KOR.get(relation, relation)``.
+
+    edges 원자료가 하나도 없으면 두 목록 모두 빈 배열을 반환한다.
+    """
+    node_index: dict[str, dict] = {}
+    seen_edges: set[tuple[str, str, str]] = set()
+    edges_out: list[dict] = []
+
+    def _register_node(node_id, node_class, node_name) -> None:
+        # id 는 문자열로 정규화(원자료가 문자열이 아닐 수 있으므로).
+        nid = str(node_id)
+        if nid in node_index:
+            return
+        cls = str(node_class) if node_class is not None else ""
+        name = node_name
+        if name is None or str(name).strip() == "":
+            name = nid
+        node_index[nid] = {
+            "id": nid,
+            "node_class": cls,
+            "label": CLASS_LABEL_KOR.get(cls, cls),
+            "name": str(name),
+        }
+
+    for rec in records:
+        for e in rec.edges:
+            source_id = str(e.get("source_id"))
+            target_id = str(e.get("target_id"))
+            relation = str(e.get("relation"))
+
+            # 노드 등록(출발 → 도착 순으로 첫 등장 순서 유지).
+            _register_node(
+                e.get("source_id"), e.get("source_class"), e.get("source_name")
+            )
+            _register_node(
+                e.get("target_id"), e.get("target_class"), e.get("target_name")
+            )
+
+            key = (source_id, target_id, relation)
+            if key in seen_edges:
+                continue
+            seen_edges.add(key)
+            edges_out.append(
+                {
+                    "source": source_id,
+                    "target": target_id,
+                    "relation": relation,
+                    "korean": RELATION_KOR.get(relation, relation),
+                }
+            )
+
+    return list(node_index.values()), edges_out
 
 
 def _build_path(records: list[ToolQueryRecord], classes: list[dict]) -> list[str]:

@@ -6,6 +6,7 @@ import { ChatPage } from '@/pages/ChatPage'
 import { GraphPage } from '@/pages/GraphPage'
 import { HomePage } from '@/pages/HomePage'
 import { KeywordSearchPage } from '@/pages/KeywordSearchPage'
+import { LogsPage } from '@/pages/LogsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export const router = createBrowserRouter([
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
   { path: '/chat', element: <ChatPage /> },
   { path: '/search', element: <KeywordSearchPage /> },
   { path: '/graph', element: <GraphPage /> },
+  { path: '/logs', element: <LogsPage /> },
   {
     element: <RootLayout />,
     children: [

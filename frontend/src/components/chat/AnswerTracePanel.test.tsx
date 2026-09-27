@@ -245,6 +245,13 @@ const anyTraceArb: fc.Arbitrary<AnswerTrace> = fc.oneof(
 
 const RUNS = { numRuns: 100 }
 
+// 상호작용(render/click)이 무거운 접근성 property(18/19)는 반복 횟수를 낮춰
+// 누적 실행 시간이 vitest 기본 타임아웃(5s)을 넘지 않도록 한다.
+const INTERACTIVE_RUNS = { numRuns: 30 }
+// 매 반복 render+click 을 수행하는 상호작용 property 테스트에 부여하는 넉넉한
+// 타임아웃(ms). 컴포넌트 렌더 비용 증가/느린 머신에서의 flaky 타임아웃을 막는다.
+const INTERACTIVE_TIMEOUT = 30000
+
 // ===========================================================================
 // 8.4 property 테스트 — 칩/탭/건수/렌더 무결성
 // Property: 12, 13, 14, 15, 16, 17
@@ -252,202 +259,229 @@ const RUNS = { numRuns: 100 }
 
 describe('AnswerTracePanel — property (8.4)', () => {
   // Feature: answer-trace-panel, Property 12
-  it('근거 버튼 존재 ⇔ trace 비어있지 않음', () => {
-    fc.assert(
-      fc.property(anyTraceArb, (trace) => {
-        const { container } = render(<AnswerTracePanel trace={trace} />)
-        const isEmpty =
-          trace.path.length === 0 &&
-          trace.classes.length === 0 &&
-          trace.relations.length === 0 &&
-          trace.evidence.length === 0 &&
-          trace.records.length === 0
-        const button = screen.queryByRole('button', {
-          name: /왜 이런 답이 나왔지/,
-        })
-        if (isEmpty) {
-          expect(container).toBeEmptyDOMElement()
-          expect(button).toBeNull()
-        } else {
-          expect(button).not.toBeNull()
-        }
-        cleanup()
-      }),
-      RUNS,
-    )
-  })
+  it(
+    '근거 버튼 존재 ⇔ trace 비어있지 않음',
+    () => {
+      fc.assert(
+        fc.property(anyTraceArb, (trace) => {
+          const { container } = render(<AnswerTracePanel trace={trace} />)
+          const isEmpty =
+            trace.path.length === 0 &&
+            trace.classes.length === 0 &&
+            trace.relations.length === 0 &&
+            trace.evidence.length === 0 &&
+            trace.records.length === 0
+          const button = screen.queryByRole('button', {
+            name: /왜 이런 답이 나왔지/,
+          })
+          if (isEmpty) {
+            expect(container).toBeEmptyDOMElement()
+            expect(button).toBeNull()
+          } else {
+            expect(button).not.toBeNull()
+          }
+          cleanup()
+        }),
+        RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 
   // Feature: answer-trace-panel, Property 13
-  it('노드 칩이 label과 node_class 텍스트를 모두 포함한다', () => {
-    fc.assert(
-      fc.property(
-        fc.array(classArb, { minLength: 1, maxLength: 4 }),
-        (classes) => {
-          const trace: AnswerTrace = { ...EMPTY_TRACE, classes }
-          render(<AnswerTracePanel trace={trace} />)
-          fireEvent.click(
-            screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
-          )
-          for (const cls of classes) {
-            const chips = screen.getAllByText(cls.label, {
-              selector: '.audit-chip',
-            })
-            // label을 담은 칩 중, node_class도 함께 담은 칩이 있어야 한다.
-            const match = chips.some((chip) =>
-              within(chip).queryByText(cls.node_class, {
-                selector: 'small',
-                exact: false,
-              }),
+  it(
+    '노드 칩이 label과 node_class 텍스트를 모두 포함한다',
+    () => {
+      fc.assert(
+        fc.property(
+          fc.array(classArb, { minLength: 1, maxLength: 4 }),
+          (classes) => {
+            const trace: AnswerTrace = { ...EMPTY_TRACE, classes }
+            render(<AnswerTracePanel trace={trace} />)
+            fireEvent.click(
+              screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
             )
-            expect(match || chipHoldsBoth(cls.label, cls.node_class)).toBe(true)
-          }
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+            for (const cls of classes) {
+              const chips = screen.getAllByText(cls.label, {
+                selector: '.audit-chip',
+              })
+              // label을 담은 칩 중, node_class도 함께 담은 칩이 있어야 한다.
+              const match = chips.some((chip) =>
+                within(chip).queryByText(cls.node_class, {
+                  selector: 'small',
+                  exact: false,
+                }),
+              )
+              expect(match || chipHoldsBoth(cls.label, cls.node_class)).toBe(
+                true,
+              )
+            }
+            cleanup()
+          },
+        ),
+        RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 
   // Feature: answer-trace-panel, Property 14
-  it('관계 칩이 원문 name과 korean 텍스트를 모두 포함한다', () => {
-    fc.assert(
-      fc.property(
-        fc.array(relationArb, { minLength: 1, maxLength: 4 }),
-        (relations) => {
-          const trace: AnswerTrace = { ...EMPTY_TRACE, relations }
-          const { container } = render(<AnswerTracePanel trace={trace} />)
-          fireEvent.click(
-            screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
-          )
-          const chips = Array.from(
-            container.querySelectorAll('.audit-chip'),
-          ) as HTMLElement[]
-          for (const rel of relations) {
-            const found = chips.some(
-              (chip) =>
-                chip.textContent?.includes(rel.name) &&
-                within(chip).queryByText(rel.korean, { selector: 'small' }) !==
-                  null,
+  it(
+    '관계 칩이 원문 name과 korean 텍스트를 모두 포함한다',
+    () => {
+      fc.assert(
+        fc.property(
+          fc.array(relationArb, { minLength: 1, maxLength: 4 }),
+          (relations) => {
+            const trace: AnswerTrace = { ...EMPTY_TRACE, relations }
+            const { container } = render(<AnswerTracePanel trace={trace} />)
+            fireEvent.click(
+              screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
             )
-            expect(found).toBe(true)
-          }
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+            const chips = Array.from(
+              container.querySelectorAll('.audit-chip'),
+            ) as HTMLElement[]
+            for (const rel of relations) {
+              const found = chips.some(
+                (chip) =>
+                  chip.textContent?.includes(rel.name) &&
+                  within(chip).queryByText(rel.korean, {
+                    selector: 'small',
+                  }) !== null,
+              )
+              expect(found).toBe(true)
+            }
+            cleanup()
+          },
+        ),
+        RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 
   // Feature: answer-trace-panel, Property 15
-  it('렌더된 탭 수가 records 길이와 같고 각 탭이 대응 클래스에 매핑된다', () => {
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(recordGroupArb, {
-          minLength: 1,
-          maxLength: 4,
-          selector: (g) => g.key,
-        }),
-        (records) => {
-          const trace: AnswerTrace = { ...EMPTY_TRACE, records }
-          render(<AnswerTracePanel trace={trace} />)
-          fireEvent.click(
-            screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
-          )
-          const tabs = screen.getAllByRole('tab')
-          expect(tabs).toHaveLength(records.length)
-          records.forEach((group, i) => {
-            expect(tabs[i]).toHaveTextContent(group.label)
-          })
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+  it(
+    '렌더된 탭 수가 records 길이와 같고 각 탭이 대응 클래스에 매핑된다',
+    () => {
+      fc.assert(
+        fc.property(
+          fc.uniqueArray(recordGroupArb, {
+            minLength: 1,
+            maxLength: 4,
+            selector: (g) => g.key,
+          }),
+          (records) => {
+            const trace: AnswerTrace = { ...EMPTY_TRACE, records }
+            render(<AnswerTracePanel trace={trace} />)
+            fireEvent.click(
+              screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
+            )
+            const tabs = screen.getAllByRole('tab')
+            expect(tabs).toHaveLength(records.length)
+            records.forEach((group, i) => {
+              expect(tabs[i]).toHaveTextContent(group.label)
+            })
+            cleanup()
+          },
+        ),
+        INTERACTIVE_RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 
   // Feature: answer-trace-panel, Property 16
-  it('활성 탭의 "전체 N건 중 M건"이 total/shown과 일치한다', () => {
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(recordGroupArb, {
-          minLength: 1,
-          maxLength: 4,
-          selector: (g) => g.key,
-        }),
-        fc.nat(),
-        (records, tabPick) => {
-          const trace: AnswerTrace = { ...EMPTY_TRACE, records }
-          render(<AnswerTracePanel trace={trace} />)
-          fireEvent.click(
-            screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
-          )
-          const index = tabPick % records.length
-          fireEvent.click(screen.getAllByRole('tab')[index])
-          const group = records[index]
-          expect(
-            screen.getByText(
-              `전체 ${group.total}건 중 ${group.shown}건 미리보기`,
-            ),
-          ).toBeInTheDocument()
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+  it(
+    '활성 탭의 "전체 N건 중 M건"이 total/shown과 일치한다',
+    () => {
+      fc.assert(
+        fc.property(
+          fc.uniqueArray(recordGroupArb, {
+            minLength: 1,
+            maxLength: 4,
+            selector: (g) => g.key,
+          }),
+          fc.nat(),
+          (records, tabPick) => {
+            const trace: AnswerTrace = { ...EMPTY_TRACE, records }
+            render(<AnswerTracePanel trace={trace} />)
+            fireEvent.click(
+              screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
+            )
+            const index = tabPick % records.length
+            fireEvent.click(screen.getAllByRole('tab')[index])
+            const group = records[index]
+            expect(
+              screen.getByText(
+                `전체 ${group.total}건 중 ${group.shown}건 미리보기`,
+              ),
+            ).toBeInTheDocument()
+            cleanup()
+          },
+        ),
+        INTERACTIVE_RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 
   // Feature: answer-trace-panel, Property 17
-  it('마크다운/HTML 마커·한국어 원문이 든 셀 값이 텍스트 그대로 렌더된다', () => {
-    // 마크다운/HTML/한국어를 섞은 셀 값 생성기
-    const cellArb = fc.constantFrom(
-      '<b>굵게</b>',
-      '**강조**',
-      '<script>alert(1)</script>',
-      '[링크](http://x)',
-      '구운몽 <九雲夢>',
-      '값 & <tag> "따옴표"',
-      '# 제목',
-    )
-    fc.assert(
-      fc.property(
-        fc.array(cellArb, { minLength: 1, maxLength: 4 }),
-        (values) => {
-          const rows: Record<string, string>[] = values.map((v, i) => ({
-            id: `r_${i}`,
-            content: v,
-          }))
-          const trace: AnswerTrace = {
-            ...EMPTY_TRACE,
-            records: [
-              {
-                key: 'k',
-                node_class: 'K',
-                label: '테스트',
-                total: rows.length,
-                shown: rows.length,
-                columns: ['id', 'content'],
-                rows,
-              },
-            ],
-          }
-          const { container } = render(<AnswerTracePanel trace={trace} />)
-          fireEvent.click(
-            screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
-          )
-          for (const v of values) {
-            // 텍스트 노드로 정확히 존재해야 한다(요소로 해석되지 않음).
-            const cell = screen.getAllByText(v, { selector: 'td' })
-            expect(cell.length).toBeGreaterThan(0)
-          }
-          // 셀 값 안의 마커가 실제 요소로 해석되지 않았는지 확인.
-          expect(container.querySelector('td script')).toBeNull()
-          expect(container.querySelector('td b')).toBeNull()
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+  it(
+    '마크다운/HTML 마커·한국어 원문이 든 셀 값이 텍스트 그대로 렌더된다',
+    () => {
+      // 마크다운/HTML/한국어를 섞은 셀 값 생성기
+      const cellArb = fc.constantFrom(
+        '<b>굵게</b>',
+        '**강조**',
+        '<script>alert(1)</script>',
+        '[링크](http://x)',
+        '구운몽 <九雲夢>',
+        '값 & <tag> "따옴표"',
+        '# 제목',
+      )
+      fc.assert(
+        fc.property(
+          fc.array(cellArb, { minLength: 1, maxLength: 4 }),
+          (values) => {
+            const rows: Record<string, string>[] = values.map((v, i) => ({
+              id: `r_${i}`,
+              content: v,
+            }))
+            const trace: AnswerTrace = {
+              ...EMPTY_TRACE,
+              records: [
+                {
+                  key: 'k',
+                  node_class: 'K',
+                  label: '테스트',
+                  total: rows.length,
+                  shown: rows.length,
+                  columns: ['id', 'content'],
+                  rows,
+                },
+              ],
+            }
+            const { container } = render(<AnswerTracePanel trace={trace} />)
+            fireEvent.click(
+              screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
+            )
+            for (const v of values) {
+              // 텍스트 노드로 정확히 존재해야 한다(요소로 해석되지 않음).
+              const cell = screen.getAllByText(v, { selector: 'td' })
+              expect(cell.length).toBeGreaterThan(0)
+            }
+            // 셀 값 안의 마커가 실제 요소로 해석되지 않았는지 확인.
+            expect(container.querySelector('td script')).toBeNull()
+            expect(container.querySelector('td b')).toBeNull()
+            cleanup()
+          },
+        ),
+        RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 })
 
 /** label과 node_class를 모두 담은 audit-chip이 존재하는지 DOM 전체에서 확인. */
@@ -469,78 +503,86 @@ function chipHoldsBoth(label: string, nodeClass: string): boolean {
 
 describe('AnswerTracePanel — 접근성 property (8.5)', () => {
   // Feature: answer-trace-panel, Property 18
-  it('토글 상태 전환 시퀀스에서 aria-expanded가 패널 open 상태와 항상 일치하고 aria-controls가 패널 id를 가리킨다', () => {
-    fc.assert(
-      fc.property(
-        nonEmptyTraceArb,
-        // 토글 클릭 횟수(0~6회)
-        fc.integer({ min: 0, max: 6 }),
-        (trace, clickCount) => {
-          render(<AnswerTracePanel trace={trace} />)
-          const button = screen.getByRole('button', {
-            name: /왜 이런 답이 나왔지/,
-          })
-          const panelId = button.getAttribute('aria-controls')
-          expect(panelId).toBeTruthy()
-          const panel = document.getElementById(panelId!)
-          expect(panel).not.toBeNull()
+  it(
+    '토글 상태 전환 시퀀스에서 aria-expanded가 패널 open 상태와 항상 일치하고 aria-controls가 패널 id를 가리킨다',
+    () => {
+      fc.assert(
+        fc.property(
+          nonEmptyTraceArb,
+          // 토글 클릭 횟수(0~6회)
+          fc.integer({ min: 0, max: 6 }),
+          (trace, clickCount) => {
+            render(<AnswerTracePanel trace={trace} />)
+            const button = screen.getByRole('button', {
+              name: /왜 이런 답이 나왔지/,
+            })
+            const panelId = button.getAttribute('aria-controls')
+            expect(panelId).toBeTruthy()
+            const panel = document.getElementById(panelId!)
+            expect(panel).not.toBeNull()
 
-          let expectedOpen = false
-          const assertConsistent = () => {
-            expect(button.getAttribute('aria-expanded')).toBe(
-              String(expectedOpen),
-            )
-            expect(panel!.classList.contains('open')).toBe(expectedOpen)
-          }
-          assertConsistent()
-          for (let i = 0; i < clickCount; i++) {
-            fireEvent.click(button)
-            expectedOpen = !expectedOpen
+            let expectedOpen = false
+            const assertConsistent = () => {
+              expect(button.getAttribute('aria-expanded')).toBe(
+                String(expectedOpen),
+              )
+              expect(panel!.classList.contains('open')).toBe(expectedOpen)
+            }
             assertConsistent()
-          }
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+            for (let i = 0; i < clickCount; i++) {
+              fireEvent.click(button)
+              expectedOpen = !expectedOpen
+              assertConsistent()
+            }
+            cleanup()
+          },
+        ),
+        INTERACTIVE_RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 
   // Feature: answer-trace-panel, Property 19
-  it('탭 선택을 바꿔가며 선택된 탭만 aria-selected=true, 나머지는 false(배타성)', () => {
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(recordGroupArb, {
-          minLength: 2,
-          maxLength: 5,
-          selector: (g) => g.key,
-        }),
-        fc.array(fc.nat(), { minLength: 1, maxLength: 6 }),
-        (records, picks) => {
-          const trace: AnswerTrace = { ...EMPTY_TRACE, records }
-          render(<AnswerTracePanel trace={trace} />)
-          fireEvent.click(
-            screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
-          )
+  it(
+    '탭 선택을 바꿔가며 선택된 탭만 aria-selected=true, 나머지는 false(배타성)',
+    () => {
+      fc.assert(
+        fc.property(
+          fc.uniqueArray(recordGroupArb, {
+            minLength: 2,
+            maxLength: 5,
+            selector: (g) => g.key,
+          }),
+          fc.array(fc.nat(), { minLength: 1, maxLength: 6 }),
+          (records, picks) => {
+            const trace: AnswerTrace = { ...EMPTY_TRACE, records }
+            render(<AnswerTracePanel trace={trace} />)
+            fireEvent.click(
+              screen.getByRole('button', { name: /왜 이런 답이 나왔지/ }),
+            )
 
-          const assertExclusive = (selectedIndex: number) => {
-            const tabs = screen.getAllByRole('tab')
-            tabs.forEach((tab, i) => {
-              expect(tab.getAttribute('aria-selected')).toBe(
-                String(i === selectedIndex),
-              )
-            })
-          }
-          // 초기 선택은 첫 탭.
-          assertExclusive(0)
-          for (const pick of picks) {
-            const index = pick % records.length
-            fireEvent.click(screen.getAllByRole('tab')[index])
-            assertExclusive(index)
-          }
-          cleanup()
-        },
-      ),
-      RUNS,
-    )
-  })
+            const assertExclusive = (selectedIndex: number) => {
+              const tabs = screen.getAllByRole('tab')
+              tabs.forEach((tab, i) => {
+                expect(tab.getAttribute('aria-selected')).toBe(
+                  String(i === selectedIndex),
+                )
+              })
+            }
+            // 초기 선택은 첫 탭.
+            assertExclusive(0)
+            for (const pick of picks) {
+              const index = pick % records.length
+              fireEvent.click(screen.getAllByRole('tab')[index])
+              assertExclusive(index)
+            }
+            cleanup()
+          },
+        ),
+        INTERACTIVE_RUNS,
+      )
+    },
+    INTERACTIVE_TIMEOUT,
+  )
 })

@@ -1,0 +1,121 @@
+/* AI 대화 로그 화면 스타일. home.css의 .home-root 토큰을 상속받는다. */
+
+.home-root .logs-page {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px);
+}
+
+.home-root .logs-head {
+  margin: 0.5rem 0 1.5rem;
+}
+.home-root .logs-head h2 {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.4rem;
+}
+.home-root .logs-head p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* 상태 표시(로딩/에러/빈 목록) */
+.home-root .logs-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+.home-root .logs-error {
+  color: #c0392b;
+  border-color: #f0c8c0;
+}
+
+/* 반응형 그리드 */
+.home-root .logs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+
+/* 카드 */
+.home-root .log-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 1.3rem;
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+.home-root .log-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--green-200);
+}
+
+.home-root .log-question {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 답변 미리보기: 플레인 텍스트 3줄 말줄임 */
+.home-root .log-answer {
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin: 0;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 하단 메타 */
+.home-root .log-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.home-root .log-likes {
+  color: var(--peach, #f2a87a);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .home-root .logs-grid {
+    grid-template-columns: 1fr;
+  }
+}

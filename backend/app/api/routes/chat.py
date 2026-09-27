@@ -1,4 +1,5 @@
 import json
+import logging
 from collections.abc import AsyncIterator
 
 from fastapi import APIRouter, HTTPException, status
@@ -11,8 +12,26 @@ from app.agents.literature_agent import (
 )
 from app.agents.trace import build_trace_payload, current_collector
 from app.core.config import settings
+from app.db.session import SessionLocal
+from app.models import AgentLog
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/chat", tags=["chat"])
+
+
+def _save_agent_log(question: str, answer: str) -> None:
+    """질문/답변을 agent_log에 저장한다. 실패해도 예외를 전파하지 않는다.
+
+    created_at / like_count는 DB 기본값에 맡긴다. 스트리밍은 이미 사용자에게
+    전달된 뒤이므로, 저장 실패가 응답을 깨뜨리면 안 된다.
+    """
+    try:
+        with SessionLocal() as db:
+            db.add(AgentLog(question=question, answer=answer))
+            db.commit()
+    except Exception:  # noqa: BLE001
+        logger.exception("agent_log 저장 실패")
 
 
 class ChatRequest(BaseModel):
@@ -54,11 +73,14 @@ async def chat_stream(payload: ChatRequest) -> StreamingResponse:
         # Req 2.1: 새 스트리밍 요청 시작 시 현재 요청의 수집기를 비운다.
         collector = current_collector()
         collector.reset()
+        parts: list[str] = []
         try:
             async for delta in stream_literature_agent(payload.message):
+                parts.append(delta)
                 yield f"data: {json.dumps({'delta': delta}, ensure_ascii=False)}\n\n"
         except Exception as err:  # noqa: BLE001
             # Req 4.3: 예외 시 error 이벤트만 방출하고 trace는 보내지 않는다.
+            # 예외 케이스에서는 agent_log에 저장하지 않는다.
             yield f"data: {json.dumps({'error': str(err)}, ensure_ascii=False)}\n\n"
         else:
             # Req 4.1/4.2: 델타가 정상 종료되면 done 직전에 trace를 1회 방출한다.
@@ -67,6 +89,10 @@ async def chat_stream(payload: ChatRequest) -> StreamingResponse:
             if trace is not None:
                 yield f"data: {json.dumps({'trace': trace}, ensure_ascii=False)}\n\n"
             yield f"data: {json.dumps({'done': True})}\n\n"
+            # 정상 완료 시에만 질문/답변을 저장한다. 빈 응답은 저장하지 않는다.
+            answer_text = "".join(parts)
+            if answer_text:
+                _save_agent_log(payload.message, answer_text)
 
     return StreamingResponse(
         event_source(),

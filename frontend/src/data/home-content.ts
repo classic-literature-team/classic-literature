@@ -24,14 +24,14 @@ export interface LinkTab {
   label: string
   icon: string
   to: string
-  variant: 'chat' | 'keyword' | 'graph'
+  variant: 'chat' | 'keyword' | 'graph' | 'logs'
 }
 
 /** 다른 페이지로 이동하는 탭 */
 export const linkTabs: LinkTab[] = [
   { label: 'AI 질문', icon: '🤖', to: '/chat', variant: 'chat' },
-  { label: '키워드 검색', icon: '🔍', to: '/search', variant: 'keyword' },
   { label: '지식그래프', icon: '🕸', to: '/graph', variant: 'graph' },
+  { label: '대화 로그', icon: '🗂', to: '/logs', variant: 'logs' },
 ]
 
 export interface Notice {
