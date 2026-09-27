@@ -27,15 +27,14 @@ class Settings(BaseSettings):
     # CORS (콤마로 구분된 origin 목록)
     cors_origins: str = "http://localhost:5173"
 
-    # LLM (OpenAI 호환 API)
-    # 구글 Gemini의 OpenAI 호환 엔드포인트를 기본값으로 사용한다.
-    # OpenAI를 직접 쓰려면 .env에서 openai_base_url을 비우고
-    # openai_model을 gpt-*로, 키를 sk-...로 바꾼다.
+    # LLM (OpenAI API)
+    # 기본값은 OpenAI 정식 엔드포인트를 사용한다(base_url을 비워두면
+    # OpenAI SDK 기본 URL이 적용된다).
+    # Gemini 등 OpenAI 호환 엔드포인트를 쓰려면 .env에서 openai_base_url을
+    # 해당 주소로, openai_model을 그 모델명으로 바꾼다.
     openai_api_key: str | None = None
-    openai_base_url: str | None = (
-        "https://generativelanguage.googleapis.com/v1beta/openai/"
-    )
-    openai_model: str = "gemini-3.6-flash"
+    openai_base_url: str | None = None
+    openai_model: str = "gpt-4o-mini"
 
     @property
     def cors_origin_list(self) -> list[str]:

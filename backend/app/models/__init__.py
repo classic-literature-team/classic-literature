@@ -1,5 +1,6 @@
 from app.models.entities import (
     AbstractWork,
+    AgentLog,
     Allusion,
     BackgroundE,
     BackgroundL,
@@ -24,6 +25,7 @@ from app.models.entities import (
 
 __all__ = [
     "AbstractWork",
+    "AgentLog",
     "Allusion",
     "BackgroundE",
     "BackgroundL",

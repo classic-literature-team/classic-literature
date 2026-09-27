@@ -260,6 +260,11 @@ def _traverse(db, model, stmt, table, steps, limit, filters=None):
     # 경로에 등장한 관계명을 순서대로(중복 제거) 모아 근거로 남긴다.
     seen_relations: list[str] = []
 
+    # 실제 노드-노드 연결(Edge)을 근거로 모은다. 각 단계의 출발 클래스는
+    # 첫 단계는 시작 class_name, 이후 단계는 직전 dest_class 다.
+    collected_edges: list[dict] = []
+    source_class = class_name
+
     for step in steps:
         if ":" not in step:
             return f"'{step}' 형식 오류. '관계명:도착클래스'로 지정하세요."
@@ -296,8 +301,23 @@ def _traverse(db, model, stmt, table, steps, limit, filters=None):
             label = f"-[{relation}/{kor}]→ {dest_class}: {e.target_name or e.target_id}"
             new_paths[f"{e.source_id}||{e.target_id}"] = base + [label]
             next_nodes.append((e.target_id, e.target_name or e.target_id))
+            # 실제 연결(edge)을 근거로 수집한다. source_class 는 이 단계의
+            # 출발 클래스, target_class 는 도착 클래스(dest_class)다.
+            collected_edges.append(
+                {
+                    "source_id": e.source_id,
+                    "source_class": source_class,
+                    "source_name": getattr(e, "source_name", None),
+                    "target_id": e.target_id,
+                    "target_class": dest_class,
+                    "target_name": e.target_name,
+                    "relation": relation,
+                }
+            )
 
         paths, current = new_paths, next_nodes
+        # 다음 단계의 출발 클래스는 이번 단계의 도착 클래스다.
+        source_class = dest_class
 
     path_values = list(paths.values())
     out = [f"총 {len(path_values)}개 경로를 찾았습니다.\n"]
@@ -321,6 +341,7 @@ def _traverse(db, model, stmt, table, steps, limit, filters=None):
             shown_rows=[],
             relations=seen_relations,
             path_segments=[" ".join(p) for p in path_values],
+            edges=collected_edges,
         )
     )
 
@@ -331,10 +352,19 @@ def _collect_relations(db, table, rows):
     """조회된 노드들에 연결된 이웃 노드를 수집한다.
 
     노드가 관계의 출발점인 경우(→)와 도착점인 경우(←)를 모두 모은다.
+
+    Returns:
+        ``(rel_map, edge_dicts)`` 튜플.
+        - ``rel_map``: 노드 id → "  → [relation/kor] Class: name" 텍스트 목록.
+          LLM 반환 텍스트의 원천이며 형식·계약은 기존과 동일하다.
+        - ``edge_dicts``: 실제 노드-노드 연결의 원자료 목록. 각 dict 는
+          ``{source_id, source_class, source_name, target_id, target_class,
+          target_name, relation}`` 형태로, 근거(trace) 그래프 병합에 쓰인다.
     """
     class_name = KEY_TO_CLASS[table]
     ids = [r.id for r in rows]
     rel_map = {}
+    edge_dicts: list[dict] = []
 
     edges = db.scalars(
         select(Edge).where(
@@ -346,18 +376,35 @@ def _collect_relations(db, table, rows):
     )
     for e in edges:
         kor = RELATION_KOR.get(e.relation, e.relation)
+        matched = False
         if e.source_class == class_name and e.source_id in ids:
             rel_map.setdefault(e.source_id, []).append(
                 f"  → [{e.relation}/{kor}] {e.target_class}: "
                 f"{e.target_name or e.target_id}"
             )
+            matched = True
         if e.target_class == class_name and e.target_id in ids:
             rel_map.setdefault(e.target_id, []).append(
                 f"  ← [{e.relation}/{kor}] {e.source_class}: "
                 f"{e.source_name or e.source_id}"
             )
+            matched = True
+        # 실제 연결(edge)의 원자료를 그래프 근거로 남긴다. 방향(→/←)과 무관하게
+        # Edge 의 source/target 를 그대로 담는다(병합 시 정규화·중복 제거).
+        if matched:
+            edge_dicts.append(
+                {
+                    "source_id": e.source_id,
+                    "source_class": e.source_class,
+                    "source_name": getattr(e, "source_name", None),
+                    "target_id": e.target_id,
+                    "target_class": e.target_class,
+                    "target_name": e.target_name,
+                    "relation": e.relation,
+                }
+            )
 
-    return rel_map
+    return rel_map, edge_dicts
 
 
 # ---------------------------------------------------------------------------
@@ -383,38 +430,69 @@ def search_hanmun_novel_db(
     표시되므로, 속성값만이 아니라 "무엇과 어떻게 연결되어 있는가"까지
     확인할 수 있다.
 
-    ─ 사용 가능한 클래스(table) ─
-    [서지] book 이본(소장처·책종·평비본 여부·편사 시기)
-           abstract_work 작품(이칭·한글본 여부·창작 시기)
-           works_compilation 작품집(표제·유형·수록 작품)
-           participant 인물(작자·편사자, 생몰년)
-    [참여] review 외평(서발·독법·부기) / side_dot 비점
-           related_work 연관작품
-    [표현] embedded_work 소작품(작중 시문)
-           allusion 전고(경사자집 분류)
-    [배열] scene 장면 / character 등장인물 / caste 신분
-           ch_elements 요소(캐릭터 분류 코드)
-           comment 논평 / remark 평비
-           number 대표목차 / episode 개별목차
-           background_e 시대 / background_l 공간 / background_w 장소
+    ─ 사용 가능한 클래스(table)와 대표 검색 컬럼 ─
+    작품·이본·작품집·인물은 이름 컬럼이 title_name_kor/name_kor 계열이고,
+    그 아래 하위 요소(장면·외평·등장인물·논평·평비·전고·소작품·연관작품 등)는
+    자체에 work_kor(작품명) 컬럼이 있어 작품명으로 직접 필터할 수 있다.
+    [서지] book 이본(소장처·책종·편사 시기) — 제목은 title_name_kor/title_name_chi,
+           소장처는 institution_kor
+           abstract_work 작품(이칭·창작 시기) — 제목은 title_name_kor/
+           title_name_chi/title_name_alter (work_kor 없음)
+           works_compilation 작품집 — 제목은 title_name_kor/cover_name_kor,
+           수록 작품은 included_work
+           participant 인물(작자·편사자) — 이름은 name_kor/name_chi/pen_name/
+           courtesy_name (work_kor 없음)
+    [참여] review 외평 — 작품명 work_kor/work_chi, target_book, reviewer,
+           criticism_type(Foreword/Postscript 등), paratext_title
+           side_dot 비점 — n_title, target_book
+           related_work 연관작품 — 작품명 work_kor, writer, rw_title, genre
+    [표현] embedded_work 소작품 — 작품명 work_kor, ew_title, ew_type, ew_genre
+           allusion 전고 — title_kor/title_chi, 작품명 work_kor, allusion_type
+    [배열] scene 장면 — 작품명 work_kor, viewpoint, language, characters
+           character 등장인물 — 작품명 work_kor, ch_name_kor, gender,
+           primary_classification / secondary_classification
+           caste 신분 — f_classification, s_classification
+           ch_elements 요소 — gender, existence, facticity, type
+           comment 논평 — 작품명 work_kor, target_book, c_type
+           remark 평비 — 작품명 work_kor, target_book, type, reviewer
+           number 대표목차 — n_title, target_book, con_type
+           episode 개별목차 — t_title, target_book, episode
+           background_e 시대 — nation_kor, dynasty_kor, ruler_kor
+           background_l 공간 — nation_kor, province_kor, landmark_kor
+           background_w 장소 — whereabouts_kor
 
     ─ 자주 쓰는 경로(steps) ─
-      이본→등장인물→요소:     ["contains:character", "possess:ch_elements"]
-      이본→등장인물→신분:     ["contains:character", "isPositionedAs:caste"]
-      이본→장면→평비:         ["contains:scene", "commentsOn:remark"]
+    관계의 중심은 book(이본)이다. 장면·외평·등장인물·논평·평비·소작품·목차·배경
+    등은 대부분 book 에 -[contains]-> 로 매달려 있고, 작품(abstract_work)은
+    -[spreadsInto]-> book 으로 이본에 연결된다. 아래 경로는 실제 관계 구조에
+    존재하는 조합만 나열한 것이다.
+      작품→이본→외평:         table="abstract_work",
+                              filters={"title_name_kor": "운영전"},
+                              steps=["spreadsInto:book", "contains:review"]
+      작품→이본→장면:         ["spreadsInto:book", "contains:scene"]
+      작품→이본→등장인물→신분: ["spreadsInto:book", "contains:character",
+                              "isPositionedAs:caste"]
+      이본→장면→평비:         (book에서 시작) ["contains:scene",
+                              "commentsOn:remark"]
       이본→장면→소작품:       ["contains:scene", "isTheSameAs:embedded_work"]
-      작품→이본→외평:         ["spreadsInto:book", "contains:review"]
+      이본→등장인물→요소:     ["contains:character", "possess:ch_elements"]
       이본→대표목차→개별목차: ["contains:number", "contains:episode"]
+      작품집→작품:            ["contains:abstract_work"]
 
     Args:
         table: 조회를 시작할 클래스. 위 목록 중 하나를 사용한다.
         filters: 컬럼명과 검색어의 딕셔너리. 문자열 컬럼은 부분 일치로
             검색한다. 한 컬럼에 여러 값을 주려면 세미콜론으로 구분하며
             OR로 묶인다. 서로 다른 컬럼끼리는 AND로 묶인다.
-            예) {"work_kor": "상사동전객기;운영전"}
-                {"institution_kor": "이길환", "pb_edition_status": "Y"}
-                {"criticism_type": "Foreword;Postscript"}
-            컬럼명이 확실하지 않으면 schema_only=True로 먼저 확인한다.
+            작품·이본·작품집은 제목 컬럼 title_name_kor 로, 인물은 name_kor
+            로 검색한다. 반면 장면·외평·등장인물·논평·평비·전고·소작품·
+            연관작품 등 하위 요소는 자체 컬럼 work_kor(작품명)로 직접 검색한다.
+            예) abstract_work: {"title_name_kor": "운영전;상사동전객기"}
+                book: {"institution_kor": "이길환", "pb_edition_status": "Y"}
+                scene/review 등: {"work_kor": "운영전"}
+                review: {"criticism_type": "Foreword;Postscript"}
+            각 클래스의 정확한 컬럼명은 schema_only=True로 먼저 확인하기를
+            강력히 권한다(존재하지 않는 컬럼으로 조회하면 실패한다).
             빈 딕셔너리면 해당 클래스 전체를 조회한다.
         steps: 관계를 따라 이동할 경로. "관계명:도착클래스" 형식으로
             순서대로 나열한다. None이나 빈 목록이면 단일 클래스 조회가
@@ -463,7 +541,10 @@ def search_hanmun_novel_db(
             if not rows:
                 return "조건에 맞는 데이터를 찾지 못했습니다."
 
-            rel_map = _collect_relations(db, table, rows) if include_relations else {}
+            if include_relations:
+                rel_map, edge_dicts = _collect_relations(db, table, rows)
+            else:
+                rel_map, edge_dicts = {}, []
 
     except ValueError as err:
         return str(err)
@@ -505,6 +586,7 @@ def search_hanmun_novel_db(
             shown_rows=[_serialize_row(row) for row in rows],
             relations=relations,
             path_segments=[],
+            edges=edge_dicts,
         )
     )
 

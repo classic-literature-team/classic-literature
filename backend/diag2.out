@@ -1,0 +1,10 @@
+Q: 구운몽의 주요 등장인물을 설명해줘
+  tool_records=0
+  trace=None -> 버튼 안 뜸
+
+Q: 「운영전」에 대한 당시 사람들의 반응들을 알려줘
+  tool_records=2
+    - table=abstract_work steps=['spreadsInto:book', 'contains:review'] total=5 shown=0 edges=35
+    - table=review steps=None total=14 shown=14 edges=14
+  trace: classes=2 records=2 nodes=53 edges=44 -> 버튼 뜸
+

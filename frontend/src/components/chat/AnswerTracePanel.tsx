@@ -2,6 +2,8 @@ import { useId, useState } from 'react'
 
 import type { AnswerTrace } from '@/hooks/useChat'
 
+import { KnowledgeGraphPanel } from './KnowledgeGraphPanel'
+
 interface AnswerTracePanelProps {
   trace: AnswerTrace
 }
@@ -24,6 +26,7 @@ function isEmptyTrace(trace: AnswerTrace): boolean {
  */
 export function AnswerTracePanel({ trace }: AnswerTracePanelProps) {
   const [open, setOpen] = useState(false)
+  const [graphOpen, setGraphOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
   const panelId = useId()
 
@@ -48,6 +51,22 @@ export function AnswerTracePanel({ trace }: AnswerTracePanelProps) {
           ▾
         </span>
       </button>
+
+      {/* 지식 그래프(비모달 플로팅 패널) 토글 버튼 */}
+      <button
+        type="button"
+        className="graph-button"
+        aria-expanded={graphOpen}
+        onClick={() => setGraphOpen((prev) => !prev)}
+      >
+        지식 그래프
+      </button>
+
+      <KnowledgeGraphPanel
+        trace={trace}
+        open={graphOpen}
+        onClose={() => setGraphOpen(false)}
+      />
 
       {/* Req 7.2: 토글 상태에 따라 펼쳐지는 패널 */}
       <div id={panelId} className={`answer-audit${open ? ' open' : ''}`}>
